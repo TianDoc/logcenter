@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<script type="text/javascript" src="../../ichart.1.2.1.min.js"></script>
+		<link rel="stylesheet" href="../css/demo.css" type="text/css"/>
+		<script type="text/javascript">
+			$(function(){
+				var data = [
+				        	{name : 'IE',value : 35.75,color:'#9d4a4a'},
+				        	{name : 'Chrome',value : 29.84,color:'#5d7f97'},
+				        	{name : 'Firefox',value : 24.88,color:'#97b3bc'},
+				        	{name : 'Safari',value : 6.77,color:'#a5aaaa'},
+				        	{name : 'Opera',value : 2.02,color:'#778088'},
+				        	{name : 'Other',value : 0.73,color:'#6f83a5'}
+			        	];
+	        	
+				new iChart.Pie2D({
+					render : 'canvasDiv',
+					data: data,
+					legend : {
+						enable : true
+					},
+					showpercent:true,
+					decimalsnum:2,
+					width : 800,
+					height : 400,
+					radius:140
+				}).draw();
+			});
+		</script>
+	</head>
+	<body>
+		<div id='canvasDiv'></div>
+		<div class='ichartjs_info'>
+				<span class='ichartjs_btn' onmouseover="this.style.color='#2f99ff'" onmouseout="this.style.color='#0b2946'" onclick="window.top.viewCode(document);"></span>
+
+
+			</div>
+	</body>
+</html>
