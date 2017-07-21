@@ -106,9 +106,10 @@ def groupget(request):  ##用户组管理界面
     grouplist=group.objects.all()
     return render(request,'group.html',{'group':grouplist})
 
-def logstyleget(request):  ##日志种类管理界面
+def newpassword(request):  ##日志种类管理界面
     #logstyle=group.objects.all()
-    return render(request,'logstyle.html')
+    password=getnewpassword(int(request.GET['long']))
+    return render(request,'logstyle.html',{'password':password})
 
 def detail(request):        ##修改界面
     if request.GET['type']=='1':                    ####删除联系人小组
@@ -211,6 +212,17 @@ def checktext(text): 			##判断屏蔽字格式是否正确
 def getpie():  # @NoSelf
     d=OrderedDict()
     m=len(table.objects.all())
+    i=0.5
     for a in control.objects.all():
         d[a.keyword]=[len(table.objects.filter(question=a.keyword))/m,'#'+hex(int(random.uniform(0.5,1)*16777215)).replace('0x','',1)]
     return d
+
+def getnewpassword(a):
+    password = ["a", "b", "c", "d", "e", "f", "g", "h",
+                "i", "j", "k", "l", "m", "n", "o", "p",
+                "q", "r", "s", "t", "u", "v", "w", "x",
+                "y", "z", "1", "2", "3", "4", "5", "6",
+                "7", "8", "9", "0", "#", "@", "!", ".",
+                "+", "-", "*"]
+    return "".join([password[random.randint(0, 42)] for m in range(a)])
+
