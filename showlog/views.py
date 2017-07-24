@@ -40,7 +40,7 @@ def home(request):  ##主界面
             return render(request, 'logshow.html', {'message': message,'logal':logal,'type':1})
         elif request.GET['cut']=='4':
             logal = "显示全部"
-            message=table.objects.all()
+            message=table.objects.all().order_by('time')
             if  message :
                 for i in range(len(message)):
                     message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
@@ -107,9 +107,10 @@ def groupget(request):  ##用户组管理界面
     return render(request,'group.html',{'group':grouplist})
 
 def newpassword(request):  ##日志种类管理界面
-    #logstyle=group.objects.all()
-    password=getnewpassword(int(request.GET['long']))
-    return render(request,'logstyle.html',{'password':password})
+    if 'long' in request.GET:
+        password=getnewpassword(int(request.GET['long']))
+        return render(request,'logstyle.html',{'password':password})
+    return render(request, 'logstyle.html')
 
 def detail(request):        ##修改界面
     if request.GET['type']=='1':                    ####删除联系人小组
