@@ -65,8 +65,8 @@
                             <ul class="nav ">
                                 <li><a href="{% url "grouplist" %}">联系小组管理</a></li>
                                 <li><a href="{% url "userlist" %}">联系人管理</a></li>
-                                <li><a href="{% url "controllist" %}">塞选条件管理</a></li>
-                                <li><a href="{% url "newpasswordget" %}">日志类型管理</a></li>
+                                <li><a href="{% url "controllist" %}">筛选条件管理</a></li>
+                                <li><a href="{% url "newpasswordget" %}">密码生成器</a></li>
                                 <li><a href="{% url "fastselect" %}">快捷选项管理</a></li>
                             </ul>
                         </li>
@@ -92,68 +92,23 @@
     <div class="row">
     <div class="box col-md-12">
     <div class="box-inner">
-
     <div class="box-header well" data-original-title="">
-        <h2><i class="glyphicon glyphicon-user"></i> 错误日志</h2>
+        <h2><i class="glyphicon glyphicon-user"></i> 快捷条件</h2>
 
     </div>
-    <div class="btn-group box col-md-12">
-                    <button class="btn btn-default ">{{ logal }}</button>
-                    <button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><span
-                            class="caret"></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a href="{% url "logshow"%}?cut=1"><i class="glyphicon glyphicon-star"></i> 最近一天</a></li>
-                        <li><a href="{% url "logshow"%}?cut=2"><i class="glyphicon glyphicon-star"></i> 最近一周</a></li>
-                        <li><a href="{% url "logshow"%}?cut=3"><i class="glyphicon glyphicon-star"></i> 最近一月</a></li>
-                        <li><a href="{% url "logshow"%}?cut=4"><i class="glyphicon glyphicon-star"></i> 显示全部</a></li>
-                    </ul>
-                </div>
-            <div class=" box col-md-2">
-        <a href="{% url "logshow"%}?cut=OSPFV2"><i class="glyphicon glyphicon-star"></i> OSPFV2</a>
-                </div>
-		<div class=" box col-md-5">
-        <a href="{% url "logshow"%}?cut=up/down"><i class="glyphicon glyphicon-star"></i>up/down</a>
-                </div>
     <div class="box-content">
-    {% if type != 2 %}
-    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
-    {% else %}
-    <table class="table table-striped table-bordered bootstrap-datatable responsive">
-    {% endif %}
-    <thead>
-    <tr>
-        <th>时间</th>
-	<th>ip</th>
-        <th>host</th>
-        <th>message</th>
-	    <th>question</th>
-        <th>已通知人</th>
-	{% if type != 3 %}
-        <th>查看历史纪录</th>
-        {%endif%}
-    </tr>
-    </thead>
-    <tbody>
-    	{%for td in message  %}
-    	<tr>
-    		<td class="center">{{td.time}}</td>
-    		<td class="center">{{td.host}}</td>
-                <td class="center">{{td.host}}</td>
-            <td><a href="#" class="btn btn-danger" data-toggle="popover" data-content="{{td.date}}" >详细信息</a></td>
-    		<td class="center">{{td.showmessage }}
-    		</td>
-    		<td class="center">
-    			{{ td.name }}
-    		</td>
-		{% if type != 3 %}
-                <td><a href="{% url "logshow"%}?cut=5&id={{ td.id }}"><i class="glyphicon "></i> 查看历史</a></td>
-                {% endif %}
-    	</tr>
-    	{% endfor %}
-    	</tbody>
-    		
-</div>
 
+
+</div>
+         <div class="row">
+             <div class="box col-md-1">
+    <div class="box-inner">
+        <a class="btn btn-success" href="{%url 'detail'%}?type=22">
+    				<i class="glyphicon glyphicon-edit icon-white"></i>
+    				新建
+    			</a>
+    </div>
+    </div>
 <!-- external javascript -->
 
 <script src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>

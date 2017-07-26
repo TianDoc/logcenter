@@ -27,5 +27,7 @@ urlpatterns = [
     url(r'^detail', showlog_views.detail, name="detail"),
     url(r'^turnback', showlog_views.turnback, name="turnback"),
     url(r'^showmessage', showlog_views.showmessage, name="showmessage"),
-    url(r'^historytable', showlog_views.historytable, name="historytable"),
+    url(r'^historytable', showlog_views.historytablelist, name="historytable"),
+    url(r'^fastselect', showlog_views.fastselect, name="fastselect"),
+    url(r'^timeturn', showlog_views.timeturn, name="timeturn"),
 ]

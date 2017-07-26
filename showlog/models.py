@@ -42,3 +42,7 @@ class historytable(models.Model):
     host = models.CharField(max_length=30)
     time = models.IntegerField()
     id = models.IntegerField(primary_key=True)
+
+class selected(models.Model):
+
+    id = models.IntegerField(primary_key=True)

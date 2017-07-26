@@ -46,7 +46,7 @@ def home(request):  ##主界面
                 for i in range(len(message)):
                     message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
-                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage                 
+                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
             return render(request, 'logshow.html', {'message': message[::-1],'logal':logal,'type':2})
         elif request.GET['cut']=='1':
             logal = "最近一天"
@@ -58,7 +58,7 @@ def home(request):  ##主界面
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
             return render(request, 'logshow.html', {'message': message,'logal':logal,'type':1})
-        elif request.GET['cut']=='5':    
+        elif request.GET['cut']=='5':
             message=table.objects.filter(date=table.objects.filter(id=request.GET['id'])[0].date)
             logal="历史纪录"
             if message:
@@ -83,7 +83,7 @@ def home(request):  ##主界面
                 for i in range(len(message)):
                     message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
-                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage                   
+                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
             return render(request, 'logshow.html', {'message': message, 'logal': logal, 'type': 1})
     logal="最近一天"
     timequit = int(time.mktime((datetime.datetime.now() - datetime.timedelta(days=1)).timetuple()))
@@ -92,7 +92,7 @@ def home(request):  ##主界面
         for i in range(len(message)):
             message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
             if message[i].showmessage==None :
-                message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage 
+                message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
     return render(request, 'logshow.html', {'message': message,'logal':logal,'type':1})
 
 def controlget(request):  ##赛选条件界面
@@ -223,32 +223,48 @@ def showmessage(request):
         del d['judgement']
     return render(request, 'showmessage.html', {'d':d,'logal':logal})
 
-def historytable(request):
-    if 'timequit' in request.GET and 'ip' in request.GET:
+def historytablelist(request):
+    if 'timequit' in request.GET and 'ip' in request.GET and('starttime' not in request.GET or 'endtime' not in request.GET):
         if request.GET['timequit']=="1":
-            timequit=time.time()-60*60*24
-            history=historytable.objects.filter(Q(host=request.GET['ip'])&Q(time__gt=timequit))
+            timequit=time.time()-60*60*24+8*60*60
+            history=historytable.objects.filter(Q(host=request.GET['ip'].strip())&Q(time__gt=timequit)).order_by('time')
             if history:
                 for i in range(len(history)):
                     history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
-            return render(request, 'historytable.html',{'select':'1','historytable':history,'ip':request.GET['ip']})
+            return render(request, 'historytable.html',{'select':1,'historytable':history[::-1],'ip':request.GET['ip']})
         elif request.GET['timequit']=="2":
-            timequit = time.time()-60*60*24*3
-            history = historytable.objects.filter(Q(host=request.GET['ip']) & Q(time__gt=timequit))
+            timequit = time.time()-60*60*24*3+8*60*60
+            #history = historytable.objects.all()
+            history = historytable.objects.filter(Q(host=request.GET['ip'].strip()) & Q(time__gt=timequit)).order_by('time')
             if history:
                 for i in range(len(history)):
                     history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
-            return render(request, 'historytable.html',{'select': '2', 'historytable': history, 'ip': request.GET['ip']})
+            return render(request, 'historytable.html',{'select': 2, 'historytable': history[::-1], 'ip': request.GET['ip']})
         elif request.GET['timequit']=="3":
-            timequit = time.time()-60*60*24*7
-            history = historytable.objects.filter(Q(host=request.GET['ip']) & Q(time__gt=timequit))
+            timequit = time.time()-60*60*24*7+8*60*60
+            #history = historytable.objects.all()
+            history = historytable.objects.filter(Q(host=request.GET['ip'].strip()) & Q(time__gt=timequit)).order_by('time')
             if history:
                 for i in range(len(history)):
                     history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
-            return render(request, 'historytable.html',{'select': '3', 'historytable': history, 'ip': request.GET['ip']})
+            return render(request, 'historytable.html',{'select': 3, 'historytable': history[::-1], 'ip': request.GET['ip']})
+    elif 'starttime' in request.GET and 'endtime' in request.GET and 'ip' in request.GET :
+        starttime = time.mktime(time.strptime(request.GET['starttime'], "%Y-%m-%d %H:%M:%S"))-8*60*60
+        endtime=time.mktime(time.strptime(request.GET['endtime'], "%Y-%m-%d %H:%M:%S"))-8*60*60
+        history = historytable.objects.filter(Q(host=request.GET['ip'].strip()) & Q(time__gt=starttime)&Q(time__lt=endtime)).order_by('time')
+        if history:
+            for i in range(len(history)):
+                history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time + 8 * 60 * 60))
+        return render(request, 'historytable.html',{'starttime':starttime,'endtime':endtime})
     return render(request, 'historytable.html')
 
+def fastselect(request):
+    return render(request,'fastselect.html')
 
+def timeturn(request):
+    if 'starttime' in request.GET:
+        return render(request, 'time.html',{'starttime':request.GET['starttime'],'endtime':request.GET['endtime']})
+    return render(request, 'time.html')
 def checktext(text): 			##判断屏蔽字格式是否正确
     if text=="":
         return ""

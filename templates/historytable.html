@@ -35,6 +35,20 @@
 
     <!-- The fav icon -->
     <link rel="shortcut icon" href="/static/img/favicon.ico">
+<script type="text/javascript" src="/static/laydate.js"></script>
+
+<style type="text/css">
+*{margin:0;padding:0;list-style:none;}
+html{background-color:#E3E3E3; font-size:14px; color:#000; font-family:'微软雅黑'}
+h2{line-height:30px; font-size:20px;}
+a,a:hover{ text-decoration:none;}
+pre{font-family:'微软雅黑'}
+.box{width:970px; padding:10px 20px; background-color:#fff; margin:10px auto;}
+.box a{padding-right:20px;}
+.demo1,.demo2,.demo3,.demo4,.demo5,.demo6{margin:25px 0;}
+h3{margin:10px 0;}
+.layinput{height: 22px;line-height: 22px;width: 150px;margin: 0;}
+</style>
 
 </head>
 
@@ -57,7 +71,7 @@
                             <ul class="nav " style="display: block;">
                                 <li><a href="{% url "logshow" %}">网络设备错误日志</a></li>
                                 <li><a href="{% url "historytable" %}">历史日志查询</a></li>
-
+                                <li><a href="{% url "showmessage" %}">日志统计</a></li>
                             </ul>
                         </li>
                         <li class="accordion">
@@ -67,7 +81,7 @@
                                 <li><a href="{% url "userlist" %}">联系人管理</a></li>
                                 <li><a href="{% url "controllist" %}">塞选条件管理</a></li>
                                 <li><a href="{% url "newpasswordget" %}">密码生成器</a></li>
-                                <li><a href="{% url "showmessage" %}">日志统计</a></li>
+                                <li><a href="{% url "fastselect" %}">快捷选项管理</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -103,19 +117,20 @@
                     <p class="col-md-1">IP</p>
     <textarea name="ip" class="form-group col-md-3" rows="1">{{ ip }}</textarea>
 
-        <p class="col-md-2">
+        <p class="col-md-6">
         <select name="timequit">
             <option value="1"{% if select == 1 %}selected="selected" {% endif %} >最近一天</option>
             <option value="2" {% if select == 2 %}selected="selected" {% endif %} >最近三天</option>
-            <option value="2" {% if select == 3 %}selected="selected" {% endif %} >最近七天</option>
+            <option value="3" {% if select == 3 %}selected="selected" {% endif %} >最近七天</option>
         </select>
+        <input  class="inline laydate-icon" style="width:150px;" id="hello3" name='starttime' value="{{ starttime }}"></input>
+	   <input class="inline laydate-icon" style="width:150px;" id="hello4" name='endtime' value="{{ endtime }}"></input>
     </p>
-<p class="col-md-2">
+<p class="col-md-1">
     				<button type="submit" class="btn btn-primary">查询</button>
         </p>
 </form>
          </div>
-
 </div>
     <div class="box-content">
     <table class="table table-striped table-bordered bootstrap-datatable responsive">
@@ -127,18 +142,50 @@
     </tr>
     </thead>
     <tbody>
+        {% for i in historytable %}
     	<tr>
-            {% for i in histroytable %}
-    		<td class="center">{{ historytable.host }}</td>
-    		<td class="center">{{ historytable.time }}</td>
-    		<td class="center">{{ historytable.date }}</td>
-            {% endfor %}
+    		<td class="center">{{ i.host }}</td>
+    		<td class="center">{{ i.time }}</td>
+    		<td class="center">{{ i.date }}</td>
 
     	</tr>
+        {% endfor %}
     	</tbody>
 
 </div>
 
+<script type="text/javascript">
+!function(){
+	laydate.skin('molv');//切换皮肤，请查看skins下面皮肤库
+	laydate({elem: '#demo'});//绑定元素
+}();
+
+
+//日期范围限定在昨天到明天
+laydate({
+    elem: '#hello3',
+
+	format: 'YYYY-MM-DD hh:mm:ss',
+
+	istime: true,
+    min: laydate.now(-7), //-1代表昨天，-2代表前天，以此类推
+    max: laydate.now(0) //+1代表明天，+2代表后天，以此类推
+});
+laydate({
+
+    elem: '#hello4',
+
+	format: 'YYYY-MM-DD hh:mm:ss',
+
+	istime: true,
+
+    min: laydate.now(-7), //-1代表昨天，-2代表前天，以此类推
+
+    max: laydate.now(0) //+1代表明天，+2代表后天，以此类推
+
+});
+
+</script>
 
 <!-- external javascript -->
 
