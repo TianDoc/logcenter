@@ -79,7 +79,7 @@
                             <a href="#"><i class="glyphicon glyphicon-plus"></i><span>错误日志信息</span></a>
                             <ul class="nav " style="display: block;">
                                 <li><a href="{% url "logshow" %}">网络设备错误日志</a></li>
-
+                                <li><a href="{% url "historytable" %}">历史日志查询</a></li>
 
                             </ul>
                         </li>
@@ -115,11 +115,25 @@
     <div class="row">
     <div class="box col-md-12">
     <div class="box-inner">
+
     <div class="box-header well" data-original-title="">
         <h2><i class="glyphicon glyphicon-user"></i> 数据汇总</h2>
 
+
     </div>
+     <div class="btn-group box col-md-12">
+                    <button class="btn btn-default ">{{ logal }}</button>
+                    <button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><span
+                            class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url "showmessage"%}?cut=1"><i class="glyphicon glyphicon-star"></i> 显示一周</a></li>
+                        <li><a href="{% url "showmessage"%}?cut=2"><i class="glyphicon glyphicon-star"></i> 显示一月</a></li>
+                        <li><a href="{% url "showmessage"%}?cut=3"><i class="glyphicon glyphicon-star"></i> 显示全部</a></li>
+                    </ul>
+                </div>
                     <div class="box-content">
+
+
                 <div id='canvasDiv'></div>
                 {%for key,value in d.items%}
 				        	{{value.1}}

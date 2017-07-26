@@ -37,4 +37,8 @@ class group(models.Model):
     groupname=models.CharField(max_length=30)
     id=models.IntegerField(primary_key=True)
 
-
+class historytable(models.Model):
+    date = models.TextField()
+    host = models.CharField(max_length=30)
+    time = models.IntegerField()
+    id = models.IntegerField(primary_key=True)

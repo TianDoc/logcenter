@@ -9,6 +9,7 @@ from .models import table
 from .models import user
 from .models import control
 from .models import group
+from .models import historytable
 from django.utils.timezone import now, timedelta
 import datetime
 import time
@@ -197,9 +198,55 @@ def turnback(request):      ##跳转界面
         return render(request, 'control.html', {'control': controllist})
 
 def showmessage(request):
-    d=getpie()
-    return render(request, 'showmessage.html', {'d':d})
+    if 'cut' in request.GET:
+        if request.GET['cut']=='1':
+            logal = '显示一周'
+            d = getpie(60 * 60 * 24 * 7)
+            if d['judgement']==1:
+                del d['judgement']
+            return render(request, 'showmessage.html', {'d': d, 'logal': logal})
+        elif request.GET['cut']=='2':
+            logal = '显示一月'
+            d = getpie(60 * 60 * 24 * 30)
+            if d['judgement']==1:
+                del d['judgement']
+            return render(request, 'showmessage.html', {'d': d, 'logal': logal})
+        elif request.GET['cut']=='3':
+            logal = '显示全部'
+            d = getpie(0)
+            if d['judgement']==1:
+                del d['judgement']
+            return render(request, 'showmessage.html', {'d': d, 'logal': logal})
+    logal='显示一周'
+    d=getpie(60*60*24*7)
+    if d['judgement'] == 1:
+        del d['judgement']
+    return render(request, 'showmessage.html', {'d':d,'logal':logal})
 
+def historytable(request):
+    if 'timequit' in request.GET and 'ip' in request.GET:
+        if request.GET['timequit']=="1":
+            timequit=time.time()-60*60*24
+            history=historytable.objects.filter(Q(host=request.GET['ip'])&Q(time__gt=timequit))
+            if history:
+                for i in range(len(history)):
+                    history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
+            return render(request, 'historytable.html',{'select':'1','historytable':history,'ip':request.GET['ip']})
+        elif request.GET['timequit']=="2":
+            timequit = time.time()-60*60*24*3
+            history = historytable.objects.filter(Q(host=request.GET['ip']) & Q(time__gt=timequit))
+            if history:
+                for i in range(len(history)):
+                    history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
+            return render(request, 'historytable.html',{'select': '2', 'historytable': history, 'ip': request.GET['ip']})
+        elif request.GET['timequit']=="3":
+            timequit = time.time()-60*60*24*7
+            history = historytable.objects.filter(Q(host=request.GET['ip']) & Q(time__gt=timequit))
+            if history:
+                for i in range(len(history)):
+                    history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
+            return render(request, 'historytable.html',{'select': '3', 'historytable': history, 'ip': request.GET['ip']})
+    return render(request, 'historytable.html')
 
 
 def checktext(text): 			##判断屏蔽字格式是否正确
@@ -210,13 +257,27 @@ def checktext(text): 			##判断屏蔽字格式是否正确
     else:
         return ",".join([x.strip() for x in text.split(',')])
 
-def getpie():  # @NoSelf
+def getpie(timesplit):  # @NoSelf
     d=OrderedDict()
-    m=len(table.objects.all())
-    i=0.5
-    for a in control.objects.all():
-        d[a.keyword]=[len(table.objects.filter(question=a.keyword))/m,'#'+hex(int(random.uniform(0.5,1)*16777215)).replace('0x','',1)]
-    return d
+    if timesplit==0:
+        m=len(table.objects.all())
+        if m !=0:
+            for a in control.objects.all():
+                d[a.keyword]=[len(table.objects.filter(question=a.keyword))/m,'#'+hex(int(random.uniform(0.5,1)*16777215)).replace('0x','',1)]
+            d['judgement']=1
+            return d
+        d['judgement']=0
+        return d
+    else:
+        timequit=time.time()-timesplit
+        m = len(table.objects.filter(time__gt=timequit))
+        if m!=0:
+            for a in control.objects.all():
+                d[a.keyword]=[len(table.objects.filter(Q(question=a.keyword)&Q(time__gt=timequit)))/m,'#'+hex(int(random.uniform(0.5,1)*16777215)).replace('0x','',1)]
+            d['judgement']=1
+            return d
+        d['judgement']=0
+        return d
 
 def getnewpassword(a):
     password = ["a", "b", "c", "d", "e", "f", "g", "h",
