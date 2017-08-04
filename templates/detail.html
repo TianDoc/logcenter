@@ -65,7 +65,7 @@
                             <ul class="nav ">
                                 <li><a href="{% url "grouplist" %}">联系小组管理</a></li>
                                 <li><a href="{% url "userlist" %}">联系人管理</a></li>
-                                <li><a href="{% url "controllist" %}">塞选条件管理</a></li>
+                                <li><a href="{% url "controllist" %}">筛选条件管理</a></li>
                                 <li><a href="{% url "newpasswordget" %}">密码生成器</a></li>
                                 <li><a href="{% url "fastselect" %}">快捷选项管理</a></li>
                             </ul>
@@ -190,6 +190,7 @@
 </div>
 </form>
             </div>
+
             {% elif request.GET.type == '21' %}
                         <div class="box-header well" data-original-title="">
         <h2><i class="glyphicon glyphicon-user"></i> 新建联系组信息</h2>
@@ -289,6 +290,23 @@
 </div>
 </form>
             </div>
+                       {% elif request.GET.type == '24' %}
+                        <div class="box-header well" data-original-title="">
+        <h2><i class="glyphicon glyphicon-user"></i> 新建快捷选择</h2>
+    </div>
+    <div class="box-content">
+
+<form  action="{%url "turnback"%}" method="get" >
+<div class="box-content row">
+                <div class="  col-md-12">
+                    <p class="col-md-1">信息</p>
+    <textarea name="fastselect" class="form-group col-md-4" rows="2"></textarea>
+  </div>
+  <p class="col-md-1">
+                        <button type="submit" class="btn btn-primary">修改</button>
+                    </p>
+</div>
+</form>
         {% endif %}
 
 

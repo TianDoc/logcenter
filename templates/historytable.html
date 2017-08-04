@@ -79,7 +79,7 @@ h3{margin:10px 0;}
                             <ul class="nav ">
                                 <li><a href="{% url "grouplist" %}">联系小组管理</a></li>
                                 <li><a href="{% url "userlist" %}">联系人管理</a></li>
-                                <li><a href="{% url "controllist" %}">塞选条件管理</a></li>
+                                <li><a href="{% url "controllist" %}">筛选条件管理</a></li>
                                 <li><a href="{% url "newpasswordget" %}">密码生成器</a></li>
                                 <li><a href="{% url "fastselect" %}">快捷选项管理</a></li>
                             </ul>
@@ -132,20 +132,23 @@ h3{margin:10px 0;}
 </form>
          </div>
 </div>
+    {% if number != 0 %}
+    <p class="col-md-2">  共有{{number}}条查询结果</p>
+    {%endif%}
     <div class="box-content">
     <table class="table table-striped table-bordered bootstrap-datatable responsive">
     <thead>
     <tr>
-        <th>host</th>
         <th>time</th>
+        <th>host</th>
         <th>message</th>
     </tr>
     </thead>
     <tbody>
         {% for i in historytable %}
     	<tr>
-    		<td class="center">{{ i.host }}</td>
     		<td class="center">{{ i.time }}</td>
+    		<td class="center">{{ i.host }}</td>
     		<td class="center">{{ i.date }}</td>
 
     	</tr>

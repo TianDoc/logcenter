@@ -88,7 +88,7 @@
                             <ul class="nav ">
                                 <li><a href="{% url "grouplist" %}">联系小组管理</a></li>
                                 <li><a href="{% url "userlist" %}">联系人管理</a></li>
-                                <li><a href="{% url "controllist" %}">塞选条件管理</a></li>
+                                <li><a href="{% url "controllist" %}">筛选条件管理</a></li>
                                 <li><a href="{% url "newpasswordget" %}">密码生成器</a></li>
                                 <li><a href="{% url "fastselect" %}">快捷选项管理</a></li>
                             </ul>
@@ -132,13 +132,10 @@
                     </ul>
                 </div>
                     <div class="box-content">
-
-
+<p class="col-md-2">共有{{number}}条错误日志</p>
                 <div id='canvasDiv'></div>
-                {%for key,value in d.items%}
-				        	{{value.1}}
-				 {%endfor%}
             </div>
+          
         </div>
     </div>
 </div>

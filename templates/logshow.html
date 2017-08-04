@@ -65,7 +65,7 @@
                             <ul class="nav ">
                                 <li><a href="{% url "grouplist" %}">联系小组管理</a></li>
                                 <li><a href="{% url "userlist" %}">联系人管理</a></li>
-                                <li><a href="{% url "controllist" %}">塞选条件管理</a></li>
+                                <li><a href="{% url "controllist" %}">筛选条件管理</a></li>
                                 <li><a href="{% url "newpasswordget" %}">日志类型管理</a></li>
                                 <li><a href="{% url "fastselect" %}">快捷选项管理</a></li>
                             </ul>
@@ -108,12 +108,12 @@
                         <li><a href="{% url "logshow"%}?cut=4"><i class="glyphicon glyphicon-star"></i> 显示全部</a></li>
                     </ul>
                 </div>
-            <div class=" box col-md-2">
-        <a href="{% url "logshow"%}?cut=OSPFV2"><i class="glyphicon glyphicon-star"></i> OSPFV2</a>
-                </div>
-		<div class=" box col-md-5">
-        <a href="{% url "logshow"%}?cut=up/down"><i class="glyphicon glyphicon-star"></i>up/down</a>
-                </div>
+<div class=" box col-md-12">
+    {% for i in fastselect %}
+        <a href="{% url "logshow"%}?cut={{ i }}"><i class="glyphicon glyphicon-star"></i>{{ i }}</a>
+
+    {% endfor %}
+</div>
     <div class="box-content">
     {% if type != 2 %}
     <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">

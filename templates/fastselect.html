@@ -96,18 +96,41 @@
         <h2><i class="glyphicon glyphicon-user"></i> 快捷条件</h2>
 
     </div>
-    <div class="box-content">
 
+<div class="box-content">
+    <table class="table table-striped table-bordered bootstrap-datatable datatable responsive">
+    <thead>
+    <tr>
+        <th>索引词</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    	{%for td in fastselect%}
+    	<tr>
+    		<td class="center">{{td}}</td>
 
+                		<from action="" method="get">
+    		<td class="center">
+
+    			<a class="btn btn-danger" href="{%url 'detail'%}?id={{td}}&type=4">
+    				<i class="glyphicon glyphicon-edit icon-white"></i>
+    				删除
+    			</a>
+    		</td>
+    		</from>
+    	</tr>
+    	{% endfor %}
+    	</tbody>
+<!{{ fastselect }}-->
 </div>
          <div class="row">
              <div class="box col-md-1">
     <div class="box-inner">
-        <a class="btn btn-success" href="{%url 'detail'%}?type=22">
+        <a class="btn btn-success" href="{%url 'detail'%}?type=24">
     				<i class="glyphicon glyphicon-edit icon-white"></i>
     				新建
     			</a>
-    </div>
     </div>
 <!-- external javascript -->
 
