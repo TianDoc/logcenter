@@ -99,7 +99,7 @@ def sendmail2(host,message,time,question,name):                         ###发�
             x=subprocess.getoutput('sh /usr/local/logtest/mailsend.sh %s%s%s' %(i['emailaddress'],subject,message))
     else:
         if host in importantip:
-            subject=" "+'"'+"[日志告警]"+host+"  "+question+"  "+time+'"'
+            subject=" "+'"'+"[日志告警]"+host+"  "+"端口up/down"+"  "+time+'"'
             #subject=" "+(host+question+time).replace(" ","。").replace("/","/").replace("<","《").replace(">","》").replace(";","；")
             message=' '+'"'+message+'"'
             for i in getemailaddress(name):

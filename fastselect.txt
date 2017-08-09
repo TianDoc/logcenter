@@ -1,2 +1,10 @@
 ospf
+link status
+lldp
 down
+errors
+wrong
+warnings
+stp
+flapping
+critical

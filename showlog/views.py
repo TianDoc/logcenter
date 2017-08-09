@@ -20,7 +20,7 @@ from collections import deque
 def home(request):  ##主界面
     try:
         request.session['fastselect']=[]
-        for line in open("D:\\fastselect.txt"):
+        for line in open("/usr/local/logtest/untitled2/logcenter/fastselect.txt"):
             request.session['fastselect'].append(line.replace("\n",""))
     except:
         pass
@@ -139,10 +139,10 @@ def detail(request):        ##修改界面
         return render(request, 'control.html', {'control': controllist})
     elif request.GET['type']=='4':                 #####删除快捷选项
         lines = []
-        for line in open("D:\\fastselect.txt"):
+        for line in open("/usr/local/logtest/untitled2/logcenter/fastselect.txt"):
             if line.replace('\n','') != request.GET['id']:
                 lines.append(line)
-        f = open("D:\\fastselect.txt", 'w')  ##覆盖读写
+        f = open("/usr/local/logtest/untitled2/logcenter/fastselect.txt", 'w')  ##覆盖读写
         for i in lines:
             f.write(i)
         f.close()
@@ -221,11 +221,11 @@ def turnback(request):      ##跳转界面
         return render(request, 'control.html', {'control': controllist})
     elif request.session['type']=='24':
         if request.GET['fastselect'] not in request.session['fastselect']:
-            f = open("D:\\fastselect.txt", 'a')
+            f = open("/usr/local/logtest/untitled2/logcenter/fastselect.txt", 'a')
             f.write(request.GET['fastselect']+'\n')
             f.close()
             request.session['fastselect'] = []
-            for line in open("D:\\fastselect.txt"):
+            for line in open("/usr/local/logtest/untitled2/logcenter/fastselect.txt"):
                 request.session['fastselect'].append(line.replace("\n", ""))
         return render(request, 'fastselect.html', {'fastselect': request.session['fastselect']})
 
