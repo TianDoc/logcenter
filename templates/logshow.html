@@ -122,9 +122,8 @@
 
                        <div class="btn-group">
 
-
                             <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.headpage }}{{ page.type }}">首页</a>
-                                {% if page.0 > 5 %}
+                                {% if page.selectpage != page.headpage %}
                                 <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.8 }}{{ page.type }}">...</a>
                                 {% endif %}
                                 {% for x in page.page%}
@@ -176,6 +175,21 @@
                     </tbody>
 
                     </table>
+<div class="btn-group">
+
+                            <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.headpage }}{{ page.type }}">首页</a>
+                                {% if page.selectpage != page.headpage %}
+                                <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.8 }}{{ page.type }}">...</a>
+                                {% endif %}
+                                {% for x in page.page%}
+                                    <a {% if selectpage == x %} class ="btn btn-white active" {% else %}class="btn btn-white"{% endif %} href="{% url 'logshow' %}?page={{ x }}{{ page.type }}">{{ x }}</a>
+                                {% endfor %}
+                                {% if  page.selectpage != page.endpage   %}
+                                <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.page.9 }}{{ page.type }}">...</a>
+                                {% endif %}
+                            <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.endpage }}{{ page.type }}">尾页</a>
+
+                            </div>
                         </div>
 
                     </div>

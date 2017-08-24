@@ -32,37 +32,37 @@ def home(request):  ##主界面
         if request.GET['cut']=='2':
             logal = "最近一周"
             timequit=int(time.mktime((datetime.datetime.now()- datetime.timedelta(days = 7)).timetuple()))
-            message = table.objects.filter(time__gt=timequit)
+            message = table.objects.filter(time__gt=timequit).order_by('-time')
             page=GetPage(request,message)
             if  message:
                 for i in range(len(message)):
                     message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
-            return render(request, 'logshow.html', {'page':page,'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
+                message = message[50 * (page['selectpage']-1):50 * page['selectpage'] ]
+            return render(request, 'logshow.html', {'page':page,'message': message,'logal':logal,'type':1,'fastselect':request.session['fastselect']})
         elif request.GET['cut']=='3':
             logal = "最近一月"
             timequit = int(time.mktime((datetime.datetime.now() - datetime.timedelta(days=30)).timetuple()))
-            message = table.objects.filter(time__gt=timequit)
+            message = table.objects.filter(time__gt=timequit).order_by('-time')
             page=GetPage(request,message)
             if  message:
                 for i in range(len(message)):
                     message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
-            return render(request, 'logshow.html', {'page':page,'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
+                message = message[50 * (page['selectpage']-1):50 * page['selectpage'] ]
+            return render(request, 'logshow.html', {'page':page,'message': message,'logal':logal,'type':1,'fastselect':request.session['fastselect']})
         elif request.GET['cut']=='4':
             logal = "显示全部"
-            message=table.objects.all().order_by('time')
+            message=table.objects.all().order_by('-time')
             page=GetPage(request,message)
             if  message :
                 for i in range(len(message)):
                     message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-                message=message[50*page['selectpage']:50*(page['selectpage']-1):-1]
+                message=message[50*(page['selectpage']-1):50 *page['selectpage']]
             return render(request, 'logshow.html', {'page':page,'message': message,'logal':logal,'type':2,'fastselect':request.session['fastselect']})
         elif request.GET['cut']=='1':
             logal = "最近一天"
@@ -75,9 +75,9 @@ def home(request):  ##主界面
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
                 message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
-            return render(request, 'logshow.html', {'page':page,'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
+            return render(request, 'logshow.html', {'page':page,'message': message,'logal':logal,'type':1,'fastselect':request.session['fastselect']})
         elif request.GET['cut']=='5':
-            message=table.objects.filter(date=table.objects.filter(id=request.GET['id'])[0].date)
+            message=table.objects.filter(date=table.objects.filter(id=request.GET['id'])[0].date).order_by('-time')
             logal="历史纪录"
             page=GetPage(request,message)
             if message:
@@ -85,20 +85,11 @@ def home(request):  ##主界面
                     message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
-            return render(request, 'logshow.html', {'page':page,'message': message[::-1], 'logal': logal, 'type': 3,'fastselect':request.session['fastselect']})
-        #elif request.GET['cut']=='OSPFV2':
-        #    logal = "显示OSPFV2"
-        #    message = table.objects.filter(question="ospf")
-        #    if message:
-        #        for i in range(len(message)):
-        #           message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
-         #           if message[i].showmessage==None :
-        #                 message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-         #   return render(request, 'logshow.html', {'message': message[::-1], 'logal': logal, 'type': 1})
+                message = message[50 * (page['selectpage']-1):50 * page['selectpage']]
+            return render(request, 'logshow.html', {'page':page,'message': message, 'logal': logal, 'type': 3,'fastselect':request.session['fastselect']})
         elif request.GET['cut'] in request.session['fastselect']:
             logal = "显示" + request.GET['cut']
-            message = table.objects.filter(question=request.GET['cut']).order_by('time')
+            message = table.objects.filter(question=request.GET['cut']).order_by('-time')
             page=GetPage(request,message)
             if message:
                 # message=sorted(message,key=lambda message:message['time'])
@@ -106,19 +97,19 @@ def home(request):  ##主界面
                     message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time + 8 * 60 * 60))
                     if message[i].showmessage == None:
                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
-            return render(request, 'logshow.html', {'page':page,'message': message[::-1], 'logal': logal, 'type': 1,'fastselect': request.session['fastselect']})
+                message = message[50 * (page['selectpage']-1):50 * page['selectpage'] ]
+            return render(request, 'logshow.html', {'page':page,'message': message, 'logal': logal, 'type': 1,'fastselect': request.session['fastselect']})
     logal="最近一天"
     timequit = int(time.mktime((datetime.datetime.now() - datetime.timedelta(days=1)).timetuple()))
-    message = table.objects.filter(time__gt=timequit)
+    message = table.objects.filter(time__gt=timequit).order_by('-time')
     page=GetPage(request,message)
     if  message:
         for i in range(len(message)):
             message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
             if message[i].showmessage==None :
                 message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-        message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
-    return render(request, 'logshow.html', {'page':page,'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
+        message = message[50 * (page['selectpage']-1):50 * page['selectpage'] ]
+    return render(request, 'logshow.html', {'page':page,'message': message,'logal':logal,'type':1,'fastselect':request.session['fastselect']})
 
 def controlget(request):  ##赛选条件界面
     controllist=control.objects.all()
