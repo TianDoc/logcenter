@@ -1,4 +1,3 @@
-
 # coding=utf8
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
@@ -17,6 +16,11 @@ from django.db.models import Q
 from collections import OrderedDict
 import random
 from collections import deque
+import json
+
+def index(request):
+    return render(request,"index.html")
+
 def home(request):  ##主界面
     try:
         request.session['fastselect']=[]
@@ -24,56 +28,65 @@ def home(request):  ##主界面
             request.session['fastselect'].append(line.replace("\n",""))
     except:
         pass
-
     if 'cut' in request.GET:
         if request.GET['cut']=='2':
             logal = "最近一周"
             timequit=int(time.mktime((datetime.datetime.now()- datetime.timedelta(days = 7)).timetuple()))
             message = table.objects.filter(time__gt=timequit)
+            page=GetPage(request,message)
             if  message:
                 for i in range(len(message)):
-                    message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
+                    message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
-                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage               
-            return render(request, 'logshow.html', {'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
+                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
+                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
+            return render(request, 'logshow.html', {'page':page,'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
         elif request.GET['cut']=='3':
             logal = "最近一月"
             timequit = int(time.mktime((datetime.datetime.now() - datetime.timedelta(days=30)).timetuple()))
             message = table.objects.filter(time__gt=timequit)
+            page=GetPage(request,message)
             if  message:
                 for i in range(len(message)):
-                    message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
+                    message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
-                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage                   
-            return render(request, 'logshow.html', {'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
+                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
+                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
+            return render(request, 'logshow.html', {'page':page,'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
         elif request.GET['cut']=='4':
             logal = "显示全部"
             message=table.objects.all().order_by('time')
+            page=GetPage(request,message)
             if  message :
                 for i in range(len(message)):
-                    message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
+                    message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-            return render(request, 'logshow.html', {'message': message[::-1],'logal':logal,'type':2,'fastselect':request.session['fastselect']})
+                message=message[50*page['selectpage']:50*(page['selectpage']-1):-1]
+            return render(request, 'logshow.html', {'page':page,'message': message,'logal':logal,'type':2,'fastselect':request.session['fastselect']})
         elif request.GET['cut']=='1':
             logal = "最近一天"
             timequit = int(time.mktime((datetime.datetime.now() - datetime.timedelta(days=1)).timetuple()))
             message = table.objects.filter(time__gt=timequit)
+            page=GetPage(request,message)
             if  message:
                 for i in range(len(message)):
-                    message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
+                    message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-            return render(request, 'logshow.html', {'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
+                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
+            return render(request, 'logshow.html', {'page':page,'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
         elif request.GET['cut']=='5':
             message=table.objects.filter(date=table.objects.filter(id=request.GET['id'])[0].date)
             logal="历史纪录"
+            page=GetPage(request,message)
             if message:
                 for i in range(len(message)):
-                    message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
+                    message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
                     if message[i].showmessage==None :
                          message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-            return render(request, 'logshow.html', {'message': message[::-1], 'logal': logal, 'type': 3,'fastselect':request.session['fastselect']})
+                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
+            return render(request, 'logshow.html', {'page':page,'message': message[::-1], 'logal': logal, 'type': 3,'fastselect':request.session['fastselect']})
         #elif request.GET['cut']=='OSPFV2':
         #    logal = "显示OSPFV2"
         #    message = table.objects.filter(question="ospf")
@@ -86,22 +99,26 @@ def home(request):  ##主界面
         elif request.GET['cut'] in request.session['fastselect']:
             logal = "显示" + request.GET['cut']
             message = table.objects.filter(question=request.GET['cut']).order_by('time')
+            page=GetPage(request,message)
             if message:
                 # message=sorted(message,key=lambda message:message['time'])
                 for i in range(len(message)):
-                    message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time + 8 * 60 * 60))
+                    message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time + 8 * 60 * 60))
                     if message[i].showmessage == None:
                         message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-            return render(request, 'logshow.html', {'message': message[::-1], 'logal': logal, 'type': 1,'fastselect': request.session['fastselect']})
+                message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
+            return render(request, 'logshow.html', {'page':page,'message': message[::-1], 'logal': logal, 'type': 1,'fastselect': request.session['fastselect']})
     logal="最近一天"
     timequit = int(time.mktime((datetime.datetime.now() - datetime.timedelta(days=1)).timetuple()))
     message = table.objects.filter(time__gt=timequit)
+    page=GetPage(request,message)
     if  message:
         for i in range(len(message)):
-            message[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(message[i].time+8*60*60))
+            message[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(message[i].time+8*60*60))
             if message[i].showmessage==None :
                 message[i].showmessage = control.objects.filter(keyword=message[i].question)[0].showmessage
-    return render(request, 'logshow.html', {'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
+        message = message[50 * page['selectpage']:50 * (page['selectpage'] - 1):-1]
+    return render(request, 'logshow.html', {'page':page,'message': message[::-1],'logal':logal,'type':1,'fastselect':request.session['fastselect']})
 
 def controlget(request):  ##赛选条件界面
     controllist=control.objects.all()
@@ -255,6 +272,31 @@ def showmessage(request):
         del d['judgement']
     return render(request, 'showmessage.html', {'d':d,'logal':logal,'number':m})
 
+def setting(request):
+    if request.GET['ip']:
+        config={ "service": [
+{'zabbix':'/var/log/zabbix/zabbix_server.log'},{'httpd':'/var/log/httpd/access_log'}
+]}
+        return HttpResponse(json.dumps(config))
+    config={ "service": [{'httpd':'/var/log/httpd/access_log'}]}
+    return HttpResponse(json.dumps(config))
+
+def testapi(request):
+    if 'hostip' in request.GET:
+        return render(request,'api.html',{'hostip':request.GET['hostip']})
+    if 'date' in request.GET:
+        
+        return render(request,'api.html',{'hostip':request.GET['date']})
+    if 'zabbixlog' in request.POST:
+        line=[]
+        for i in request.POST['zabbixlog']:
+            line.append(i)
+        return render(request,'api.html',{'hostip':request.POST['zabbixlog']})
+        #return render(request,'api.html',{'hostip':line})
+    else:
+        return render(request,'api.html',{'hostip':"禁止"})
+
+
 def historytablelist(request):
     if  'ip' in request.GET:
         if request.GET['timequit']=="1" and (request.GET['starttime']=='' or request.GET['endtime']==''):
@@ -262,7 +304,7 @@ def historytablelist(request):
             history=historytable.objects.filter(Q(host=request.GET['ip'].strip())&Q(time__gt=timequit)).order_by('time')
             if history:
                 for i in range(len(history)):
-                    history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
+                    history[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(history[i].time+8*60*60))
             return render(request, 'historytable.html',{'number':len(history),'select':1,'historytable':history[::-1],'ip':request.GET['ip']})
         elif request.GET['timequit']=="2" and (request.GET['starttime']=='' or request.GET['endtime']==''):
             timequit = time.time()-60*60*24*3+8*60*60
@@ -270,7 +312,7 @@ def historytablelist(request):
             history = historytable.objects.filter(Q(host=request.GET['ip'].strip()) & Q(time__gt=timequit)).order_by('time')
             if history:
                 for i in range(len(history)):
-                    history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
+                    history[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(history[i].time+8*60*60))
             return render(request, 'historytable.html',{'number':len(history),'select': 2, 'historytable': history[::-1], 'ip': request.GET['ip']})
         elif request.GET['timequit']=="3" and (request.GET['starttime']=='' or request.GET['endtime']==''):
             timequit = time.time()-60*60*24*7+8*60*60
@@ -278,7 +320,7 @@ def historytablelist(request):
             history = historytable.objects.filter(Q(host=request.GET['ip'].strip()) & Q(time__gt=timequit)).order_by('time')
             if history:
                 for i in range(len(history)):
-                    history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time+8*60*60))
+                    history[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(history[i].time+8*60*60))
             return render(request, 'historytable.html',{'number':len(history),'select': 3, 'historytable': history[::-1], 'ip': request.GET['ip']})
         elif request.GET['starttime']!='' and request.GET['endtime']!='' : 
             starttime = time.mktime(time.strptime(request.GET['starttime'], "%Y-%m-%d %H:%M:%S"))-8*60*60
@@ -286,7 +328,7 @@ def historytablelist(request):
             history = historytable.objects.filter(Q(host=request.GET['ip'].strip()) & Q(time__gt=starttime)&Q(time__lt=endtime)).order_by('time')
             if history:
                 for i in range(len(history)):
-                    history[i].time = time.strftime("%Y %b %d %H:%M:%S", time.localtime(history[i].time + 8 * 60 * 60))
+                    history[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(history[i].time + 8 * 60 * 60))
         #return render(request, 'historytable.html',{'starttime':starttime,'endtime':endtime})
             return render(request, 'historytable.html',{'number':len(history),'starttime':request.GET['starttime'],'endtime':request.GET['endtime'],'historytable': history[::-1], 'ip': request.GET['ip']})
 
@@ -338,3 +380,42 @@ def getnewpassword(a):
                 "+", "-", "*"]
     return "".join([password[random.randint(0, 42)] for m in range(a)])
 
+def GetPage(request,table):
+    m={}
+    number=len(table)
+    page = int(number / 50) + 1
+    if 'page' not in request.GET:
+        pages=1
+        if page > 10:
+            pagelist = [x for x in range(1, 11)]
+        else:
+            pagelist = [x for x in range(1, page+1)]
+        m['selectpage'] = 1
+        m['endpage'] = page
+        m['headpage']= 1
+        m['page'] =pagelist
+        m['number'] = number
+    else:
+        selectpage=int(request.GET['page'])
+        if page > 10 :
+            if selectpage > 5 and selectpage < (page - 5):
+                pagelist = [x for x in range(int(request.GET['page'])-5, int(request.GET['page'])+5)]
+            elif selectpage <= 5:
+                pagelist = [x for x in range(1, 11)]
+            elif selectpage >= (page - 5):
+                pagelist = [x for x in range(page-9,page+1)]
+        else:
+            pagelist=[x for x in range(1,page+1)]
+        m['selectpage'] = selectpage
+        m['endpage'] = page
+        m['headpage']= 1
+        m['page'] =pagelist
+        m['number'] = number
+    if 'cut' in request.GET:
+        if 'id' in request.GET:
+            m['type'] = '&cut='+request.GET['cut']+'&id='+request.GET['id']
+        else:
+            m['type'] = '&cut=' + request.GET['cut']
+    else:
+        m['type'] = ''
+    return m

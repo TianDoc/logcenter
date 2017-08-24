@@ -23,6 +23,7 @@ class control(models.Model):
     nokeyword = models.TextField(null=True)
     showmessage = models.CharField(max_length=50, null=True)
     power=models.IntegerField(default=1)
+    #usetag=models.IntegerField(default=1)    
 
 class user(models.Model):
     user=models.CharField(max_length=30)
@@ -46,3 +47,4 @@ class historytable(models.Model):
 class selected(models.Model):
 
     id = models.IntegerField(primary_key=True)
+

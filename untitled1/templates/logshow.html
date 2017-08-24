@@ -1,0 +1,215 @@
+<!--
+*
+*  INSPINIA - Responsive Admin Theme
+*  version 2.7
+*
+-->
+
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>日志报警展示</title>
+
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- Toastr style -->
+    <link href="/static/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
+    <!-- Gritter -->
+    <link href="/static/js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
+
+    <link href="/static/css/animate.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div id="wrapper">
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav metismenu" id="side-menu">
+                    <li class="nav-header">
+
+                        <div class="logo-element">
+                            IN+
+                        </div>
+                    </li>
+                    <li class="active">
+                        <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">错误日志信息</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level">
+                            <li><a href="{% url "logshow" %}">网络设备错误日志</a></li>
+                            <li><a href="{% url "historytable" %}">历史日志查询</a></li>
+                            <li><a href="{% url "showmessage" %}">日志统计</a></li>
+                        </ul>
+                    </li>
+
+                     <li >
+                        <a href="#"><i class="fa fa-table"></i> <span class="nav-label">后台管理</span><span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse">
+                            <li><a href="{% url "grouplist" %}">联系小组管理</a></li>
+                            <li><a href="{% url "userlist" %}">联系人管理</a></li>
+                            <li><a href="{% url "controllist" %}">筛选条件管理</a></li>
+                            <li><a href="{% url "newpasswordget" %}">日志类型管理</a></li>
+                            <li><a href="{% url "fastselect" %}">快捷选项管理</a></li>
+
+                        </ul>
+                    </li>
+
+   
+        </nav>
+
+        <div id="page-wrapper" class="gray-bg dashbard-1">
+        <div class="row border-bottom">
+        <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+
+            <ul class="nav navbar-top-links navbar-right">
+                <li>
+                    <span class="m-r-sm text-muted welcome-message">Welcome to 雷霆基础日志服务器</span>
+                </li>
+ 
+
+                <li>
+                    <a class="right-sidebar-toggle">
+                        <i class="fa fa-tasks"></i>
+                    </a>
+                </li>
+
+            </ul>
+
+
+        </nav>
+        </div>
+
+        <div class="wrapper wrapper-content animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>错误日志</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                   <div class="ibox-content">
+                     {% for i in fastselect %}
+                            <div class=" box col-md-2  ">
+                                <a href="{% url "logshow"%}?cut={{ i }}"><i ></i>{{ i }}</a>
+                            </div>
+                        {% endfor %}
+                   <div class="ibox-content">
+ <div class="btn-group">
+                            <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">{{ logal }}<span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                        <li><a href="{% url "logshow"%}?cut=1">最近一天</a></li>
+                        <li><a href="{% url "logshow"%}?cut=2"> 最近一周</a></li>
+                        <li><a href="{% url "logshow"%}?cut=3"> 最近一月</a></li>
+                        <li><a href="{% url "logshow"%}?cut=4">显示全部</a></li>
+                    </ul>
+                        </div>
+                        <div class="table-responsive">
+                        {% if type != 2 %}
+                    <table class="table table-striped table-bordered table-hover  dataTables-example" >
+                    {% else %}
+                    <table class="table table-striped table-bordered table-hover  " >
+                    {% endif %}
+                    <thead>
+                    <tr>
+                        <th>时间</th>
+	                    <th>ip</th>
+                        <th>host</th>
+                        <th>message</th>
+                        <th>question</th>
+                        <th>已通知人</th>
+                        	{% if type != 3 %}
+                             <th>查看历史纪录</th>
+                            {%endif%}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {%for td in message  %}
+                    <tr class="gradeX">
+                        <td>{{td.time}}</td>
+                        <td>{{td.host}}</td>
+                        <td>{{td.host}}</td>
+                    <td><a type="button" class="btn btn-primary btn-sm" data-toggle="popover" data-content="{{td.date}}" >详细信息</a></td>
+                        <td>{{td.showmessage }}</td>
+                        <td>{{ td.name }}</td>
+		                {% if type != 3 %}
+                <td>
+                  <a  href="{% url "logshow"%}?cut=5&id={{ td.id }}" type="button" class="btn btn-w-m btn-link">查看历史</a></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+
+                    </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+        </div>
+        </div>
+
+    <!-- Mainly scripts -->
+
+    <script src="/static/js/jquery-3.1.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/static/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <script src="/static/js/plugins/dataTables/datatables.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="/static/js/inspinia.js"></script>
+    <script src="/static/js/plugins/pace/pace.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.dataTables-example').DataTable({
+                aaSorting: [[ 0, "desc" ]],
+                pageLength: 25,
+                responsive: true,
+                dom: '<"html5buttons"B>lTfgitp',
+                buttons: [
+                    { extend: 'copy'},
+                    {extend: 'csv'},
+                    {extend: 'excel', title: 'ExampleFile'},
+                    {extend: 'pdf', title: 'ExampleFile'},
+
+                    {extend: 'print',
+                     customize: function (win){
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                    }
+                    }
+                ]
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>
