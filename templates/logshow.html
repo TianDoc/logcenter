@@ -35,7 +35,14 @@
             <div class="sidebar-collapse">
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
+<div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" src="/static/img/IMG_1352.jpg" />
+                             </span>
+                            <a   href="{% url 'index' %}"  >
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">_(:3J∠)_</strong>
+                             </span>  </span> </a>
 
+                        </div>
                         <div class="logo-element">
                             IN+
                         </div>
@@ -124,7 +131,7 @@
 
                             <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.headpage }}{{ page.type }}">首页</a>
                                 {% if page.selectpage != page.headpage %}
-                                <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.8 }}{{ page.type }}">...</a>
+                                <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.page.0 }}{{ page.type }}">...</a>
                                 {% endif %}
                                 {% for x in page.page%}
                                     <a {% if selectpage == x %} class ="btn btn-white active" {% else %}class="btn btn-white"{% endif %} href="{% url 'logshow' %}?page={{ x }}{{ page.type }}">{{ x }}</a>
@@ -134,15 +141,11 @@
                                 {% endif %}
                             <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.endpage }}{{ page.type }}">尾页</a>
 
-                            <p class="col-md-12">  共有{{page.number}}条查询结果  共有{{ page.endpage }}页</p>
+                            <p class="col-md-12">  共有{{page.number}}条查询结果  共有{{ page.endpage }}页 每页500条数据 目前第{{page.selectpage}}页</p>
                             </div>
 
-                        {% if type != 2 %}
 {#                    <table class="table table-striped table-bordered table-hover  dataTables-example" >#}
-                            <table class="table table-striped table-bordered table-hover  " >
-                    {% else %}
-                    <table class="table table-striped table-bordered table-hover  " >
-                    {% endif %}
+                            <table class="table table-striped table-bordered table-hover dataTables-example " >
                     <thead>
                     <tr>
                         <th>时间</th>
@@ -179,7 +182,7 @@
 
                             <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.headpage }}{{ page.type }}">首页</a>
                                 {% if page.selectpage != page.headpage %}
-                                <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.8 }}{{ page.type }}">...</a>
+                                <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.page.0 }}{{ page.type }}">...</a>
                                 {% endif %}
                                 {% for x in page.page%}
                                     <a {% if selectpage == x %} class ="btn btn-white active" {% else %}class="btn btn-white"{% endif %} href="{% url 'logshow' %}?page={{ x }}{{ page.type }}">{{ x }}</a>
@@ -218,7 +221,7 @@
         $(document).ready(function(){
             $('.dataTables-example').DataTable({
                 aaSorting: [[ 0, "desc" ]],
-                pageLength: 25,
+                pageLength: 50,
                 responsive: true,
                 dom: '<"html5buttons"B>lTfgitp',
                 buttons: [

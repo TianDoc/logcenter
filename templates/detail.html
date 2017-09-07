@@ -55,7 +55,14 @@
             <div class="sidebar-collapse">
                 <ul class="nav metismenu" id="side-menu">
                     <li class="nav-header">
+<div class="dropdown profile-element"> <span>
+                            <img alt="image" class="img-circle" src="/static/img/IMG_1352.jpg" />
+                             </span>
+                            <a   href="{% url 'index' %}"  >
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">_(:3J∠)_</strong>
+                             </span>  </span> </a>
 
+                        </div>
                         <div class="logo-element">
                             IN+
                         </div>
@@ -183,7 +190,12 @@
   </div>
     <div class="  col-md-12">
                     <p class="col-md-1">报警频率</p>
-    <textarea name="times" class="form-group col-md-4" rows="2">{{control.times}}</textarea>
+        <select name="times">
+                     <option {%if control.times == 1%} selected="selected" {% endif %}value="1" >每一条报警一次</option>
+                    <option {%if control.times == 2%} selected="selected" {% endif %} value="2" >每两条报警一次</option> 
+                    <option {%if control.times == 5%} selected="selected" {% endif %} value="5">每五条报警一次</option>
+                    <option {%if control.times == 10000%} selected="selected" {% endif %} value="10000">每一万报警一次</option>
+        </select>
   </div>
   <div class="  col-md-12">
                     <p class="col-md-1">报警展示</p>
@@ -282,7 +294,12 @@
   </div>
     <div class="  col-md-12">
                     <p class="col-md-1">报警频率</p>
-    <textarea name="times" class="form-group col-md-4" rows="2"></textarea>
+        <select name="times">
+                     <option value="1" >每一条报警一次</option>
+                    <option value="2" >每两条报警一次</option>
+                    <option value="5">每五条报警一次</option>
+                    <option value="10000">每一万报警一次</option>
+        </select>
   </div>
     <div class="  col-md-12">
                     <p class="col-md-1">报警展示</p>
