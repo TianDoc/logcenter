@@ -18,6 +18,7 @@ from django.contrib import admin
 from showlog import views as showlog_views  # @UnresolvedImport
 
 urlpatterns = [
+    url(r'^index', showlog_views.index,name="index"),
     url(r'^admin/', admin.site.urls),
     url(r'^logshow', showlog_views.home,name="logshow"),
     url(r'^user', showlog_views.userget,name="userlist"),
@@ -29,5 +30,7 @@ urlpatterns = [
     url(r'^showmessage', showlog_views.showmessage, name="showmessage"),
     url(r'^historytable', showlog_views.historytablelist, name="historytable"),
     url(r'^fastselect', showlog_views.fastselect, name="fastselect"),
-    url(r'^timeturn', showlog_views.timeturn, name="timeturn"),
+    # url(r'^timeturn', showlog_views.timeturn, name="timeturn"),
+    # url(r'^test/api',showlog_views.testapi),
+    # url(r'^test/setting',showlog_views.setting),
 ]

@@ -154,7 +154,7 @@
                         <th>message</th>
                         <th>question</th>
                         <th>已通知人</th>
-                        	{% if type != 3 %}
+                        	{% if type != 0 %}
                              <th>查看历史纪录</th>
                             {%endif%}
                     </tr>
@@ -165,10 +165,10 @@
                         <td>{{td.time}}</td>
                         <td>{{td.host}}</td>
                         <td>{{td.host}}</td>
-                    <td><a type="button" class="btn btn-primary btn-sm" data-toggle="popover" data-content="{{td.date}}" >详细信息</a></td>
+                    <td><a type="button" class="btn btn-primary btn-sm" data-toggle="popover" data-content=">{{td.date}}" >详细信息</a></td>
                         <td>{{td.showmessage }}</td>
                         <td>{{ td.name }}</td>
-		                {% if type != 3 %}
+		                {% if type != 0 %}
                 <td>
                   <a  href="{% url "logshow"%}?cut=5&id={{ td.id }}" type="button" class="btn btn-w-m btn-link">查看历史</a></td>
                         {% endif %}
@@ -188,7 +188,7 @@
                                     <a {% if selectpage == x %} class ="btn btn-white active" {% else %}class="btn btn-white"{% endif %} href="{% url 'logshow' %}?page={{ x }}{{ page.type }}">{{ x }}</a>
                                 {% endfor %}
                                 {% if  page.selectpage != page.endpage   %}
-                                <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.page.9 }}{{ page.type }}">...</a>
+                                <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.tailpage }}{{ page.type }}">...</a>
                                 {% endif %}
                             <a class="btn btn-white" href="{% url 'logshow' %}?page={{ page.endpage }}{{ page.type }}">尾页</a>
 

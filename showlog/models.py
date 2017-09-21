@@ -48,3 +48,6 @@ class selected(models.Model):
 
     id = models.IntegerField(primary_key=True)
 
+class discard(models.Model):
+    id =models.IntegerField(primary_key=True)
+    keyword = models.CharField(max_length=90)
