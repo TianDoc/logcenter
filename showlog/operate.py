@@ -18,7 +18,6 @@ import random
 from collections import deque
 import json
 
-
 def change_change(request):
     if request.GET['type']=='1':                    ####删除联系人小组
         if group.objects.filter(id=int(request.GET['id'])):
