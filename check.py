@@ -10,7 +10,7 @@ import os
 def getresult():
     times=str(datetime.datetime.now())
     sendmail2(times,"进程停止了")
-    os.system("python /usr/local/logtest/logchoose.py &")
+    os.system("python3 /usr/local/logtest/untitled2/logcenter/logchoose.py &")
     sendmail2(str(datetime.datetime.now()),"进程启动啦") 
 
 def sendmail2(times,message):

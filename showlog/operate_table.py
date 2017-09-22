@@ -50,6 +50,7 @@ def gettable(request):
     message,page = changetable(request,message)
     return message,page,types,logal
 
+
 def changetable(request,message):
     page=GetPage(request,message)
     if  message:
@@ -82,6 +83,7 @@ def gethistorytable(request):
     history,page = changehistorytable(request,history)
     return render(request, 'historytable.html',{'page':page,'select':select,'historytable':history,'ip':request.GET['ip']})
 
+
 def changehistorytable(request,history):
     page = GetPage(request, history)
     if history:
@@ -89,6 +91,8 @@ def changehistorytable(request,history):
             history[i].time = time.strftime("%Y/%m/%d %H:%M:%S", time.localtime(history[i].time+8*60*60))
         history = history[500 * (page['selectpage'] - 1):500 * page['selectpage']]
     return history,page
+
+
 
 def draw_pie(request):
     if 'cut' in request.GET:
@@ -130,6 +134,8 @@ def GetPie(timesplit):  # @NoSelf
             return d,m
         d['judgement']=0
         return d,m
+
+
 
 def GetPage(request,table):
     m={}

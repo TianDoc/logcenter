@@ -13,7 +13,7 @@ import base64
 import os
 import threading
 import traceback
-
+import snmp_save
 
 His_Sendnum = 2000          ###历史记录储存上限
 Mis_Sendnum = 1             ###错误日志储存上限
@@ -50,7 +50,7 @@ def save(data,type):
             sql="INSERT INTO showlog_historytable(DATE,TIME,HOST)VALUES('"+p[0]+"','"+p[1].split('.')[0]+"','"+p[2]+"')"
             cur.execute(sql)
     elif type == 'table':
-        for p in hehe:
+        for p in data:
             sql="INSERT INTO showlog_table(DATE,TIME,NAME,HOST,question,showmessage)VALUES('"+p[0]+"','"+p[1].split('.')[0]+"','"+p[2]+"','"+p[3]+"','"+p[4]+"','"+p[5]+"')"
             cur.execute(sql)
     cur.close()
@@ -127,6 +127,7 @@ def screen():                  ###逻辑筛选模块
                 if discards['keyword'] in message:
                     whatiwant=0
             if whatiwant:
+ #               print (message)
                 hehehe.append([message,timechange(rtime),host])
                 count+=1
                 for questions in question:
@@ -149,6 +150,7 @@ def screen():                  ###逻辑筛选模块
             time_start=time.time()
         try:
             if count >His_Sendnum:          ###当存His_Sendnum条错误日志时统一添加到数据库
+#                print("历史储存OK")
                 save(hehehe,'historytable')
                 count=0
                 hehehe.clear()
@@ -158,6 +160,7 @@ def screen():                  ###逻辑筛选模块
             hehehe.clear()
             count=0
         if len(hehe)>=Mis_Sendnum:     ###当存Mis_Sendnum条错误日志时统一添加到数据库
+            
             save(hehe,'table') 
             hehe.clear()    
 
