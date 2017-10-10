@@ -46,6 +46,7 @@ def gettable(request):
     else:
         logal = "最近一天"
         timequit = int(time.time())-1*24*60*60
+        #message = table.objects.filter(time__gt=timequit).exclude(question = 'snmp').order_by('-time') ###去除snmp日志
         message = table.objects.filter(time__gt=timequit).order_by('-time')
     message,page = changetable(request,message)
     return message,page,types,logal

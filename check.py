@@ -1,34 +1,15 @@
 import subprocess
 import time
 import datetime
-import smtplib
 import logging
-import email.mime.multipart    
-import email.mime.text  
 import os
-
+import threading
+import traceback
 def getresult():
+    print("test")
     times=str(datetime.datetime.now())
-    sendmail2(times,"进程停止了")
-    os.system("python3 /usr/local/logtest/untitled2/logcenter/logchoose.py &")
-    sendmail2(str(datetime.datetime.now()),"进程启动啦") 
+    os.system("python3 /usr/local/logtest/untitled2/logcenter/time_mission.py&")
+    os.system("sh /usr/local/logtest/untitled2/logcenter/mailsend.sh 'zhangpc1@ifeng.com' '进程重启了' '进程重启了'")    
 
-def sendmail2(times,message):
-    MAIL_HOST = "smtp.126.com"
-    MAIL_USER = "z550665887"
-    MAIL_FROM = "z550665887@126.com"
-    MAIL_PWD = "zpc159357"
-    subject =times+message
-    msg=email.mime.multipart.MIMEMultipart() 
-    msg['From'] = MAIL_FROM
-    msg['Subject'] = subject
-    msg['To'] = "447143800@qq.com" 
-    msg.attach(email.mime.text.MIMEText(message))
-    smtp = smtplib.SMTP()
-    smtp.connect(MAIL_HOST,25)
-    smtp.login(MAIL_USER, MAIL_PWD)
-    smtp.sendmail(MAIL_FROM,['447143800@qq.com'], msg.as_string())
-    smtp.quit()
-
-getresult() if 'logchoose.py' not in subprocess.getoutput("ps -ef|grep logchoose") else ""
+getresult() if int(os.popen("ps -ef|grep mission|wc -l").read()[:-1].strip()) <=2 else ""   ####在os中的管道加管道符 实际上会产生两个进程
 #time.sleep(300)

@@ -8,3 +8,4 @@ warnings
 stp
 flapping
 critical
+snmp
