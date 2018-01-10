@@ -19,12 +19,15 @@ from collections import deque
 import json
 from .operate import *
 from .operate_table import *
+from ipware.ip import get_ip
 
 def index(request):
     return render(request,"index.html")
 
 def home(request):  ##主界面
     try:
+        with open("/usr/local/logtest/untitled2/logcenter/log.txt",'a') as f:
+            f.write(str(int(time.time()))+"    "+get_ip(request))
         request.session['fastselect']=[]
         for line in open("/usr/local/logtest/untitled2/logcenter/fastselect.txt"):
             request.session['fastselect'].append(line.replace("\n",""))

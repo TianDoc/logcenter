@@ -13,7 +13,7 @@ import traceback
 import operate
 import json
 
-Session_Sendnum = 1000000      ###Session储存上限
+Session_Sendnum = 20000      ###Session储存上限
 His_Sendnum = 2000          ###历史记录储存上限
 Mis_Sendnum = 1             ###错误日志储存上限
 pwd = "/usr/local/logtest/untitled2/logcenter/"
@@ -76,14 +76,17 @@ def screen():                  ###逻辑筛选模块
                 message=p["message"][1].replace("'"," ")
             elif type(p["message"]) ==str:
                 whatiwant=0
-                message=p["message"]
+                message=p["message"].replace("'"," ")
             if 'session start' in message :
                 #print(message)
                 hehehehe.append([message,timechange(rtime),host])
                 count_session+=1
-            for discards in discard:
-                if discards['keyword'] in message:
-                    whatiwant=0
+            if whatiwant:
+                for discards in discard:
+                    if discards['keyword'] in message:
+                        whatiwant=0
+            if host == "10.0.21.13":
+                whatiwant=1
             if whatiwant:
                 hehehe.append([message,timechange(rtime),host])
                 count+=1
@@ -107,9 +110,12 @@ def screen():                  ###逻辑筛选模块
             time_start=time.time()
         if count_session>Session_Sendnum:
             try:
-                threading.Thread(target=operate.save_session,args=[hehehehe])
+                #operate.save_session(hehehehe)
+                #t=threading.Thread(target=operate.save_session,args=[hehehehe])
+                #t.start()
+                #t.join()
                 count_session=0
-                hehehehe.clear()
+                hehehehe=[]
             except:
                 operate.sendmail2("1","traceback.print_exc():"+traceback.format_exc(),"1","1","测试组")
                 count_session=0
@@ -134,9 +140,9 @@ def run():
     global hehe                     ##储存所有报警list                    
     global he                       ##记录报警出现次数的字典
     he={}
-    hehe=deque([])
-    hehehe=deque([])
-    hehehehe=deque([])
+    hehe=[]
+    hehehe=[]
+    hehehehe=[]
     t=threading.Thread(target=operate.sendmail2,args=["1","1","1","1","测试组"])
     t.start()
     try:

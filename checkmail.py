@@ -15,8 +15,9 @@ def getresult():
 
 def getresult2():
     times = str(datetime.datetime.now())
+    #sendmail2(times,"logstash停止了")
+    os.system("logstash -f /usr/local/logstash-5.4.0/config/logstash_to_redis.conf &")
     sendmail2(times,"logstash停止了")
-    os.system("ls")
 def sendmail2(times,message):
     MAIL_HOST = "smtp.126.com"
     MAIL_USER = "z550665887"
@@ -38,7 +39,7 @@ while True:
     #print(subprocess.getoutput("ps -ef|grep sendmail"))
     try:
         getresult() if 'accepting connections' not in subprocess.getoutput("ps -ef|grep sendmail") else ""
-        getresult() if subprocess.getoutput("netstat -ntlp|grep :::2514") else ""
+        getresult2() if subprocess.getoutput("netstat -ntlp|grep :::2514") else ""
     except:
         sendmail2(str(datetime.datetime.now()),trackbace.format_exc())
     time.sleep(10)

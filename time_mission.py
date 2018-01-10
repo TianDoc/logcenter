@@ -14,19 +14,29 @@ import operate
 import logchoose
 import snmp_save
 import base64
+import snmp_check
 
 pwd = "/usr/local/logtest/untitled2/logcenter/"
-Pro = []                    ###加载需要启动的进程 每种日志收集方式 开辟一条进程
+###加载需要启动的进程 每种日志收集方式 开辟一条进程
 ps1 = Process(target = logchoose.run)
-ps2 = Process(target = snmp_save.run)
-Pro.append(ps1)
-Pro.append(ps2)
+ps2 = Process(target = snmp_check.run)
 
-def alive_check(Pro):       ###进程检测模块
-    for ps in Pro:
-        if not ps.is_alive():
-            ps.start()
 
+def alive_check():       ###进程检测模块
+    global ps1,ps2
+    if not ps1.is_alive():
+        ps1 = Process(target = logchoose.run)
+        ps1.start()
+    if not ps2.is_alive():
+        ps2 = Process(target = snmp_check.run)
+        ps2.start()
+
+def kill_all():
+    global ps1,ps2
+    if  ps1.is_alive():
+        ps1.terminate()
+    if  ps2.is_alive():
+        ps2.terminate()
 def printifeng():
     banner = 'IF8gIF9fCihfKS8gX3wgX19fIF8gX18gICBfXyBfCnwgfCB8XyAvIF8gXCAnXyBcIC8gX2AgfAp8IHwgIF98ICBfX' \
              'y8gfCB8IHwgKF98IHwKfF98X3wgIFxfX198X3wgfF98XF9fLCB8CiAgICAgICAgICAgICAgICAgIHxfX18vCg=='
@@ -35,8 +45,10 @@ def printifeng():
 if __name__ == '__main__':
     print('雷霆日志系统启动啦')
     printifeng()
-    for ps in Pro:
-        ps.start()
-    while True:
-        alive_check(Pro)
-        time.sleep(30)
+    alive_check()
+    try:
+        while True:
+            alive_check()
+            time.sleep(30)
+    except:
+        kill_all()

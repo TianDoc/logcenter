@@ -6,8 +6,9 @@ import operate
 
 pwd = "/usr/local/logtest/untitled2/logcenter/"
 HOST={}
-snmpcommit = [["snmpwalk -c Lx6X1yiy -v 2c  172.31.150.252 1.3.6.1.4.1.25506.2.75.2.2.3.1.6",90,"AP当前关联STA数量"],\
-               ['snmpwalk -c Lx6X1yiy -v 2c  172.31.150.252 1.3.6.1.4.1.25506.2.75.2.1.10.1.7',2,"AP当前状态"] ]
+snmpcommit = [['snmpwalk -c Lx6X1yiy -v 2c  172.31.150.252 1.3.6.1.4.1.25506.2.75.2.1.10.1.7',2,"AP当前状态",] ]
+snmplist = ["snmpwalk -c Lx6X1yiy -v 2c  172.31.150.252 1.3.6.1.4.1.25506.2.75.2.2.3.1.6"]
+
 dataline = []
 table = []
 historytable = []
@@ -22,6 +23,29 @@ def FindHost(id):
 def ordchange(id):
     return ''.join([chr(int(x)) for x in id.split(".")[-20:]])
 
+def checkresult(id,table,rtime,data,host):
+    try:
+        key = 0
+        for i in range(3):
+            time.sleep(3)
+            for x in range(len(snmpcommit)):
+                dataline.append(os.popen('%s'%snmpcommit[x][0]).readlines()[:-1])
+                for line in dataline:
+                    if id in line:
+                        if int(data.split('= INTEGER:')[1].strip()) < snmpcommit[x][1]:
+                            key=1
+            if key == 1:
+                break
+        else:
+            table.append([data,rtime,"AP组",host,"snmp",snmpcommit[x][2]])
+            connects = os.popen('%s'%snmplist[0]).readlines()
+            for connect in connects:
+                data=data+connect+FindHost(connect.split('= INTEGER:')[0].strip())+'\n'
+            data=data +'\n'+ os.popen('%s'%snmplist).read()
+            operate.sendmail2(host[:-1],data,rtime,"snmp","AP组")
+    except:
+        operate.sendmail2("1","traceback.print_exc():"+traceback.format_exc(),"1","1","测试组")
+
 
 def run(): 
     time_start = time.time()
@@ -35,11 +59,12 @@ def run():
                     for data in dataline[x]:
                         host = FindHost(data.split('= INTEGER:')[0].strip())
                         if int(data.split('= INTEGER:')[1].strip()) >= snmpcommit[x][1]:
-                            table.append([data,rtime,"AP组",host,"snmp",snmpcommit[x][2]])
-                            t=threading.Thread(target=operate.sendmail2,args=[host[:-1],data,rtime,"snmp","AP组"])
+                            id = data.split('= INTEGER:')[0].strip()
+                            t=threading.Thread(target=checkresult,args=[id,table,rtime,data,host])
                             t.start()
                         historytable.append([data[:-1],rtime,host])
                 time_start = time.time()
+                time.sleep(20)
                 if table:
                     operate.save(table,"table")
                 if historytable:
